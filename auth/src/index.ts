@@ -1,13 +1,25 @@
-import express from 'express';
-import {json} from 'body-parser';
+import mongoose from 'mongoose';
+import {app} from './app';
+const start = async() => {
 
-const app = express();
-app.use(json());
+    if(!process.env.JWT_KEY){
+        throw new Error('JWT_KEY is not configured!!!')
+    }
+    try {
+        await mongoose.connect('mongodb://auth-mongo-srv:27017/auth', {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+            useCreateIndex: true
+        });
 
-app.get('/api/user/currentuser', (req, res)=>{
-    res.send("hi");
-})
+        console.log("db connected!!!!");
+        app.listen(3000, () => {
+            console.log("listening on port 3000!");
+        });
+    } catch (err) {
+        console.error(err);
+    }
+}
 
-app.listen(3000, ()=>{
-    console.log("listening on port 3000!");
-});
+start();
+

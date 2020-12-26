@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-depy
-spec: 
+  name: auth-depl
+spec:
   replicas: 1
-  selector: 
+  selector:
     matchLabels:
       app: auth
   template:
@@ -15,12 +15,18 @@ spec:
       containers:
         - name: auth
           image: rajaram54/auth
+          env:
+            - name: JWT_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secret
+                  key: JWT_KEY
 ---
 apiVersion: v1
 kind: Service
-metadata: 
+metadata:
   name: auth-srv
-spec: 
+spec:
   selector:
     app: auth
   ports:
